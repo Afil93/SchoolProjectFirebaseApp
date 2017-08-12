@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import {NgForm} from '@angular/forms';
+import {Component} from '@angular/core';
+import {Router} from '@angular/router';
+import {AngularFireAuth} from 'angularfire2/auth';
 
 @Component({
   selector: 'app-root',
@@ -8,9 +9,19 @@ import {NgForm} from '@angular/forms';
 })
 export class AppComponent {
 
-  login(formInfo: NgForm) {
-    console.log(formInfo.value.email);
-    console.log(formInfo.value.password);
+  constructor(public af: AngularFireAuth, private router: Router) {
+    this.af.authState.subscribe(auth => {
+      if (auth) {
+        this.af.auth.signOut();
+      }
+    });
+  }
+
+
+  logout() {
+    console.log('Logging out.');
+    this.af.auth.signOut();
+    this.router.navigateByUrl('/login');
   }
 
 }
